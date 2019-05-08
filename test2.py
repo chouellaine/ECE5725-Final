@@ -39,26 +39,23 @@ def getTimes(f):
     timePoints = getOnset(f)
     print(timePoints)
     time_np = np.array(timePoints)
+    time_np = time_np - time_np[0]
     time_diff = np.diff(time_np)
-    time_diff = time_diff.tolist()
-    times = zip(timePoints, time_diff)
+    times = zip(time_np.tolist(), time_diff.tolist())
     return times
 
 
 def createPlot(f1, f2):
     t1 = list(getTimes(f1))
     t2 = list(getTimes(f2))
-    print(t1)
-    print(t2)
     _, ax = plt.subplots()
-    ax.broken_barh(t1, (10, 10), facecolors=('blue', 'red'))
-    ax.broken_barh(t2,  (30, 10), facecolors=('red', 'blue'))
+    ax.broken_barh(t1, (15, 3), facecolors=('blue', 'red'))
+    ax.broken_barh(t2,  (25, 3), facecolors=('red', 'blue'))
     ax.set_ylim(5, 40)
     # ax.set_xlim(0, 200)
     ax.set_xlabel('seconds since start')
     ax.set_yticks([15, 25])
     ax.set_yticklabels(['Professional', 'Student'])
-    ax.grid(True)
     plt.show()
     return
 
