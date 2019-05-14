@@ -11,16 +11,17 @@ class ChildWidget(FloatLayout):
         # make sure we aren't overriding any important functionality
         super(ChildWidget, self).__init__(**kwargs)
         with self.canvas:
-            Color(.890, 0.870, 0.949, 1.0)  # colors range from 0-1 not 0-255
+            Color(0, 0, 0, 1.0)
+            # Color(.890, 0.870, 0.949, 1.0)  # colors range from 0-1 not 0-255
             self.rect = Rectangle(pos=self.pos, size=self.size)
         self.bind(pos=self.update_rect)
         self.bind(size=self.update_rect)
         self.audio = kwargs.get("audio")
         self.audio_len = self.audio.getnframes()/self.audio.getframerate()
+        print(str(self.audio_len))
         self.blocks = int(round(self.audio_len/(0.15)))
         self.curr_block = 1
         _, _, _, p = zip(*(kwargs.get("f")))
-        print(repr(p))
         self.max_freq = max(p)
         self.init_notes(kwargs.get("f"))
         self.show_notes()
@@ -42,12 +43,13 @@ class ChildWidget(FloatLayout):
         Note information
     """
 
-    def map_coord(self, t_start, t_end, p):
+    def map_coord(self, t_start, t_len, p):
         x_l = self.map_time(t_start)
-        x_r = self.map_time(t_end)
+        x_r = self.map_time(t_start+t_len)
         x_c = round((x_r + x_l)/2, 2)
-        x_len = round(x_r - x_l)
+        x_len = self.map_time(t_len)
         y_c = round((p/self.get_maxf()), 2)
+        y_c = y_c - 0.2  # add top margin to screen
         return x_c, x_len, y_c
 
     """
@@ -56,6 +58,8 @@ class ChildWidget(FloatLayout):
     """
 
     def init_notes(self, f):
+        # print(repr(f))
+        i = 0
         end_time = self.get_audio_len()
         main_x = self.size[0]
         for n in f:
@@ -64,11 +68,14 @@ class ChildWidget(FloatLayout):
                 note.Note(
                     start=n[0],
                     end=n[1],
+                    background_normal='',
                     background_color=n[2],
-                    text="",
+                    text=str(i),  # (str(i)+"start"+str(n[0])+"end" +
+                    # str(n[1])+"pos"+str(x_c)+","+str(x_len)),
                     size_hint=(x_len, .1),
                     pos_hint={'center_x': x_c, 'center_y': y_c}),
                 index=0)
+            i += 1
     """
     [show_notes] shows all the notes within the time span of [self.block]
     """

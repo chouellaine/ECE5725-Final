@@ -15,8 +15,8 @@ import numpy as np
 import matplotlib as mpl
 import matplotlib.cm as cm
 
-win_s = 4096  # fft size
-hop_s = 512   # hop size
+win_s = 512  # fft size
+hop_s = 512//2  # hop size
 
 """createFilterfile creates a new file name for the filtered audio file"""
 
@@ -57,7 +57,7 @@ def applyFilter(path, target):
 
 """
 getOnset gives the start time for each identified note in seconds.
-f is the filename of the audio file. 
+f is the filename of the audio file.
 """
 
 
@@ -83,20 +83,44 @@ def getOnset(f):
     while True:
         samples, read = s()
         p = pitch_o(samples)[0]
-        #p = int(round(p))
-        if o(samples):
+        new_note = notes_o(samples)
+        t = total_frames / float(samplerate)
+        # p = int(round(p))
+
+        if o(samples) and p > 0:
             onsets.append(o.get_last_s())
             pitches.append(p)
+            vel.append(new_note[1])
+        elif p > 0:
+            next_sample, read = s()
+            p_next = pitch_o(next_sample)[0]
+            if p_next <= 0:
+                onsets.append(t)
+                """    
+        elif p > 0:
+            next_sample, read = s()
+            p_next = pitch_o(next_sample)[0]
+            print(repr(onsets[-1]))
+            last_ons = onsets[len(onsets)-1]
+            if t > last_ons and p_next <= 0:
+                onsets.append(t)
+
         new_note = notes_o(samples)
         if (new_note[0] != 0):
+            onsets.append(t)
             vel.append(new_note[1])
+            pitches.append(p)"""
+
         total_frames += read
         if read < hop_s:
             break
+    print(repr(pitches))
     return onsets, vel, pitches
 
 
 """
+
+
 mapVel maps note velocity to an RGBA value on the viridis colormap.
 v1 and v2 are the note velocities for student and professional, respectively
 """
@@ -113,23 +137,25 @@ def mapVel(v1, v2):
 
 
 """
-getTimes returns the adjusted start times and end times for each note in [t]
+getTimes returns the adjusted start times and duration for each note in [t]
 """
 
 
 def getTimes(t):
     # print(timePoints)
     time_np = np.array(t)
-    time_np = time_np - time_np[0]
+    # time_np = time_np - time_np[0]
     time_diff = np.diff(time_np)
-    return time_np.tolist(), time_diff.tolist()
+    return t, time_diff.tolist()
 
 
 """
-getInfo gathers all the information needed for the audio files, stu and prof. 
-Returns: 
--[t1_end] and [t2_end]: array of start and end times in sec of each note
-- [c1] and [c2]: array of note velocity 
+getInfo gathers all the information needed for the audio files, stu and prof.
+Returns:
+- [t1] and [t2]: array of start time in sec of each note
+- [t1_e] and [t2_e]: array of duration times in sec of each note
+- [c1] and [c2]: array of note color associated with its note velocity
+- [p1] and [p2]: array of note frequency(Hz)
 """
 
 
@@ -139,6 +165,8 @@ def getInfo(stu, prof):
     t2, v2, p2 = getOnset(prof)
     t2_s, t2_e = getTimes(t2)
     c1, c2 = mapVel(v1, v2)
+    # print(repr(t1_s))
+    # print(repr(t1_e))
     return zip(t1_s, t1_e, c1, p1), zip(t2_s, t2_e, c2, p2)
 
 
@@ -148,7 +176,9 @@ def analyze(stu, prof):
     prof_filt = createFilterFile(prof)
     applyFilter(stu, stud_filt)
     applyFilter(prof, prof_filt)
-    result = getInfo(stud_filt, prof_filt)
-    os.remove(stud_filt)
-    os.remove(prof_filt)
+    # result = getInfo(stud_filt, prof_filt)
+    result = getInfo(stu, prof)
+    # os.remove(stud_filt)
+    # os.remove(prof_filt)
+    print(repr(result))
     return result
