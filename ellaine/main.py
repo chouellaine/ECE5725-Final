@@ -1,3 +1,5 @@
+import os
+os.environ['KIVY_GL_BACKEND'] = 'gl'
 from kivy.app import App
 from kivy.graphics import Color, Rectangle
 import root
