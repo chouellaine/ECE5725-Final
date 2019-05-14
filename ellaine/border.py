@@ -10,7 +10,8 @@ class BorderWidget(FloatLayout):
         # make sure we aren't overriding any important functionality
         super(BorderWidget, self).__init__(**kwargs)
         with self.canvas:
-            Color(0.5, 0.5, 0.5, 1.0)
+            Color(1, 1, 1, 1)
+            #Color(0.5, 0.5, 0.5, 1.0)
             self.rect = Rectangle(pos=self.pos, size=self.size)
         self.bind(pos=self.update_rect)
         self.bind(size=self.update_rect)
@@ -25,19 +26,15 @@ class BorderWidget(FloatLayout):
             pos_hint={'center_x': .5, 'center_y': .5}
         )
         left = Button(
-            id="right",
+            id="left",
             text="<",
             size_hint=(.03, .06),
-            background_normal='',
-            background_color=[0.5, 0.5, 0.5, 1.0],
             pos_hint={'center_x': .85, 'center_y': .05}
         )
         right = Button(
-            id="left",
+            id="right",
             text=">",
             size_hint=(.03, .06),
-            background_normal='',
-            background_color=[0.5, 0.5, 0.5, 1.0],
             pos_hint={'center_x': .9, 'center_y': .05}
         )
         self.add_widget(main)
@@ -54,7 +51,7 @@ class BorderWidget(FloatLayout):
     if d = 1 then left button was pressed, 
     if d = 0 then right button was pressed."""
 
-    def shift_callback(self, instance, d):
+    def shift_callback(self, d):
         for widget in self.walk(restrict=True):
             if (type(widget)is child.ChildWidget):
                 widget.set_block(d)

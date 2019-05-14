@@ -18,9 +18,9 @@ class RootWidget(FloatLayout):
         self.bind(pos=self.update_rect)
         self.bind(size=self.update_rect)
         stud, prof = analysis.analyze(
-            'test2.wav', 'test2.wav')
-        stud_sound = wave.open('test2.wav')
-        prof_sound = wave.open('test2.wav')
+            'twinkle_student.wav', 'twinkle_prof.wav')
+        stud_sound = wave.open('twinkle_student.wav')
+        prof_sound = wave.open('twinkle_prof.wav')
 
         self.add_widget(
             border.BorderWidget(

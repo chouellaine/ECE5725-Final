@@ -83,7 +83,6 @@ def getOnset(f):
     while True:
         samples, read = s()
         p = pitch_o(samples)[0]
-        new_note = notes_o(samples)
         t = total_frames / float(samplerate)
         # p = int(round(p))
 
@@ -96,25 +95,23 @@ def getOnset(f):
             p_next = pitch_o(next_sample)[0]
             if p_next <= 0:
                 onsets.append(t)
-                """    
+                """
         elif p > 0:
             next_sample, read = s()
             p_next = pitch_o(next_sample)[0]
             print(repr(onsets[-1]))
             last_ons = onsets[len(onsets)-1]
             if t > last_ons and p_next <= 0:
-                onsets.append(t)
+                onsets.append(t)"""
 
         new_note = notes_o(samples)
         if (new_note[0] != 0):
-            onsets.append(t)
             vel.append(new_note[1])
-            pitches.append(p)"""
 
         total_frames += read
         if read < hop_s:
             break
-    # print(repr(pitches))
+    # print(repr(vel))
     return onsets, vel, pitches
 
 
@@ -176,9 +173,9 @@ def analyze(stu, prof):
     prof_filt = createFilterFile(prof)
     applyFilter(stu, stud_filt)
     applyFilter(prof, prof_filt)
-    # result = getInfo(stud_filt, prof_filt)
-    result = getInfo(stu, prof)
-    # os.remove(stud_filt)
-    # os.remove(prof_filt)
+    result = getInfo(stud_filt, prof_filt)
+    # result = getInfo(stu, prof)
+    os.remove(stud_filt)
+    os.remove(prof_filt)
     print(repr(result))
     return result

@@ -1,8 +1,11 @@
 from kivy.graphics import Color, Rectangle
 from kivy.uix.floatlayout import FloatLayout
+from kivy.uix.button import Button
 from kivy.core.audio import SoundLoader
 import note
 import wave
+
+BLOCK_LEN = 15
 
 
 class ChildWidget(FloatLayout):
@@ -12,23 +15,40 @@ class ChildWidget(FloatLayout):
         super(ChildWidget, self).__init__(**kwargs)
         with self.canvas:
             Color(0, 0, 0, 1.0)
-            # Color(.890, 0.870, 0.949, 1.0)  # colors range from 0-1 not 0-255
             self.rect = Rectangle(pos=self.pos, size=self.size)
         self.bind(pos=self.update_rect)
         self.bind(size=self.update_rect)
         self.audio = kwargs.get("audio")
         self.audio_len = self.audio.getnframes()/self.audio.getframerate()
-        # Number of 15 sec blocks
-        if self.audio_len <= 15:
+        # Number of BLOCK_LEN sec blocks
+        if self.audio_len <= BLOCK_LEN:
             self.blocks = 0
         else:
-            self.blocks = int(round(self.audio_len/(15)))
+            self.blocks = int(round(self.audio_len/(BLOCK_LEN)))
 
-        self.curr_block = 1
+        self.curr_block = 0
         _, _, _, p = zip(*(kwargs.get("f")))
         self.max_freq = max(p)
         self.init_notes(kwargs.get("f"))
         self.show_notes()
+        init_t = Button(
+            id="start",
+            background_normal='',
+            background_color=[0, 0, 0, 1],
+            text=self.setTime(0),
+            size_hint=(0.05, .01),
+            pos_hint={'center_x': 0.05, 'center_y': 0.06}
+        )
+        final_t = Button(
+            id="end",
+            background_normal='',
+            background_color=[0, 0, 0, 1],
+            text=self.setTime(BLOCK_LEN),
+            size_hint=(0.05, .01),
+            pos_hint={'center_x': 0.95, 'center_y': 0.06}
+        )
+        self.add_widget(init_t)
+        self.add_widget(final_t)
 
     """
     [update_rect] updates the positioning of the rectangle that gives this
@@ -40,21 +60,22 @@ class ChildWidget(FloatLayout):
         self.rect.size = self.size
 
     def map_time(self, t):
-        return round((t/self.get_audio_len()), 2)
+        max = (self.get_curr_block()+1)*BLOCK_LEN
+        return round((t/max), 2)
 
     """
     [map_coord] converts information from analysis.py into the appropriate
         Note information
     """
 
-    def map_coord(self, t_start, t_len, p):
+    def map_coord(self, t_start, t_end, p):
         x_l = self.map_time(t_start)
-        x_r = self.map_time(t_start+t_len)
-        x_c = round((x_r + x_l)/2, 2)
-        x_len = self.map_time(t_len)
-        y_c = round((p/self.get_maxf()), 2)
-        y_c = y_c - 0.2  # add top margin to screen
-        return x_c, x_len, y_c
+        #x_r = self.map_time(t_start+t_len)
+        #x_c = round((x_r + x_l)/2, 2)
+        x_len = self.map_time(t_start+t_end)
+        y = round((p/self.get_maxf()), 2)
+        y = y - 0.2  # add top margin to screen
+        return x_l, x_len, y
 
     """
     [init_notes] initalizes a Note for each detected note from analysis.py
@@ -64,37 +85,43 @@ class ChildWidget(FloatLayout):
     def init_notes(self, f):
         # print(repr(f))
         i = 0
-        end_time = self.get_audio_len()
-        main_x = self.size[0]
         for n in f:
-            x_c, x_len, y_c = self.map_coord(n[0], n[1], n[3])
+            x_l, x_len, y = self.map_coord(n[0], n[1], n[3])
+            # if i > 0:
+            #x_c = x_c + 0.1
             self.add_widget(
                 note.Note(
                     start=n[0],
-                    end=n[1],
+                    end=n[0]+n[1],
                     background_normal='',
                     background_color=n[2],
-                    text=str(i),  # (str(i)+"start"+str(n[0])+"end" +
-                    # str(n[1])+"pos"+str(x_c)+","+str(x_len)),
+                    text=str(i),
                     size_hint=(x_len, .1),
-                    pos_hint={'center_x': x_c, 'center_y': y_c}),
+                    pos_hint={'x': x_l, 'y': y}),
                 index=0)
             i += 1
+
+    def updateNote(self, n):
+        x = self.map_time(n.get_start())
+        n.pos_hint['x'] = x
     """
     [show_notes] shows all the notes within the time span of [self.block]
     """
 
     def show_notes(self):
-        min_time = self.get_curr_block() * 0.15
-        max_time = (self.get_curr_block() + 1) * 0.15
+        min_time = self.get_curr_block() * BLOCK_LEN
+        max_time = (self.get_curr_block() + 1) * BLOCK_LEN
         for widget in self.walk(restrict=True):
             if (type(widget)is note.Note):
-                if (type(widget) is note.Note) and min_time <= widget.get_end() and widget.get_end() <= max_time and min_time <= widget.get_start() and widget.get_start() <= max_time:
-                    widget.set_visible(1)
-                else:
-                    widget.set_visible(0)
+                self.updateNote(widget)
+                if min_time <= widget.get_end() and widget.get_end() <= max_time and min_time <= widget.get_start() and widget.get_start() <= max_time:
+                    widget.toggleVisible()
 
-                widget.toggleVisible()
+            elif (type(widget) is Button):
+                if widget.id == "start":
+                    widget.text = self.setTime(min_time)
+                elif widget.id == "end":
+                    widget.text = self.setTime(max_time)
 
     def get_curr_block(self):
         return self.curr_block
@@ -111,9 +138,26 @@ class ChildWidget(FloatLayout):
     """ if d = 1 then left button was pressed, if d = 0 then right button was pressed """
 
     def set_block(self, d):
-        if d and self.get_curr_block() > 2:
+        if d and self.get_curr_block() > 0:
             self.curr_block -= 1
+            self.show_notes()
         elif not d and self.get_curr_block() < self.get_max_block():
             self.curr_block += 1
+            self.show_notes()
 
-        self.show_notes()
+    """ Convert time in seconds to minutes in the format of x:yz"""
+
+    def setTime(self, t):
+        if t < 10:
+            return "0:0"+str(t)
+        elif t < 60:
+            return "0:"+str(t)
+        else:
+            m = t/60
+            s = 60 % t
+            if s == 0:
+                return str(m)+":00"
+            elif s < 10:
+                return str(m) + ":0"+str(s)
+            else:
+                return str(m)+":"+str(s)
