@@ -25,6 +25,8 @@ class ChildWidget(FloatLayout):
             self.blocks = 0
         else:
             self.blocks = int(round(self.audio_len/(BLOCK_LEN)))
+            if self.audio_len % BLOCK_LEN > 0:
+                self.blocks += 1
 
         self.curr_block = 0
         _, _, _, p = zip(*(kwargs.get("f")))
@@ -60,7 +62,8 @@ class ChildWidget(FloatLayout):
         self.rect.size = self.size
 
     def map_time(self, t):
-        max = (self.get_curr_block()+1)*BLOCK_LEN
+        factor = t / BLOCK_LEN
+        max = BLOCK_LEN * (factor + 1)
         return round((t/max), 2)
 
     """
@@ -101,9 +104,6 @@ class ChildWidget(FloatLayout):
                 index=0)
             i += 1
 
-    def updateNote(self, n):
-        x = self.map_time(n.get_start())
-        n.pos_hint['x'] = x
     """
     [show_notes] shows all the notes within the time span of [self.block]
     """
@@ -112,10 +112,8 @@ class ChildWidget(FloatLayout):
         min_time = self.get_curr_block() * BLOCK_LEN
         max_time = (self.get_curr_block() + 1) * BLOCK_LEN
         for widget in self.walk(restrict=True):
-            if (type(widget)is note.Note):
-                self.updateNote(widget)
-                if min_time <= widget.get_end() and widget.get_end() <= max_time and min_time <= widget.get_start() and widget.get_start() <= max_time:
-                    widget.toggleVisible()
+            if (type(widget)is note.Note) and min_time <= widget.get_end()and widget.get_end() <= max_time and min_time <= widget.get_start()and widget.get_start() <= max_time:
+                widget.toggleVisible()
 
             elif (type(widget) is Button):
                 if widget.id == "start":
