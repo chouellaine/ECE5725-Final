@@ -18,8 +18,12 @@ class ChildWidget(FloatLayout):
         self.bind(size=self.update_rect)
         self.audio = kwargs.get("audio")
         self.audio_len = self.audio.getnframes()/self.audio.getframerate()
-        print(str(self.audio_len))
-        self.blocks = int(round(self.audio_len/(0.15)))
+        # Number of 15 sec blocks
+        if self.audio_len <= 15:
+            self.blocks = 0
+        else:
+            self.blocks = int(round(self.audio_len/(15)))
+
         self.curr_block = 1
         _, _, _, p = zip(*(kwargs.get("f")))
         self.max_freq = max(p)
@@ -81,8 +85,8 @@ class ChildWidget(FloatLayout):
     """
 
     def show_notes(self):
-        min_time = self.get_block() * 0.15
-        max_time = (self.get_block() + 1) * 0.15
+        min_time = self.get_curr_block() * 0.15
+        max_time = (self.get_curr_block() + 1) * 0.15
         for widget in self.walk(restrict=True):
             if (type(widget)is note.Note):
                 if (type(widget) is note.Note) and min_time <= widget.get_end() and widget.get_end() <= max_time and min_time <= widget.get_start() and widget.get_start() <= max_time:
@@ -92,8 +96,11 @@ class ChildWidget(FloatLayout):
 
                 widget.toggleVisible()
 
-    def get_block(self):
+    def get_curr_block(self):
         return self.curr_block
+
+    def get_max_block(self):
+        return self.blocks
 
     def get_maxf(self):
         return self.max_freq
@@ -101,5 +108,12 @@ class ChildWidget(FloatLayout):
     def get_audio_len(self):
         return self.audio_len
 
-    def set_block(self, n):
-        return
+    """ if d = 1 then left button was pressed, if d = 0 then right button was pressed """
+
+    def set_block(self, d):
+        if d and self.get_curr_block() > 2:
+            self.curr_block -= 1
+        elif not d and self.get_curr_block() < self.get_max_block():
+            self.curr_block += 1
+
+        self.show_notes()

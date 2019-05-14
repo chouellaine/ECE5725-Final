@@ -1,4 +1,5 @@
 from kivy.uix.floatlayout import FloatLayout
+from kivy.uix.button import Button
 from kivy.graphics import Color, Rectangle
 from kivy.core.audio import SoundLoader
 import child
@@ -17,13 +18,43 @@ class BorderWidget(FloatLayout):
         f = kwargs.get("f")
         audio = kwargs.get("audio")
 
-        self.add_widget(
-            child.ChildWidget(
-                f=f,
-                audio=audio,
-                size_hint=(.9, .8),
-                pos_hint={'center_x': .5, 'center_y': .5}))
+        main = child.ChildWidget(
+            f=f,
+            audio=audio,
+            size_hint=(.9, .8),
+            pos_hint={'center_x': .5, 'center_y': .5}
+        )
+        left = Button(
+            id="right",
+            text="<",
+            size_hint=(.03, .06),
+            background_normal='',
+            background_color=[0.5, 0.5, 0.5, 1.0],
+            pos_hint={'center_x': .85, 'center_y': .05}
+        )
+        right = Button(
+            id="left",
+            text=">",
+            size_hint=(.03, .06),
+            background_normal='',
+            background_color=[0.5, 0.5, 0.5, 1.0],
+            pos_hint={'center_x': .9, 'center_y': .05}
+        )
+        self.add_widget(main)
+        self.add_widget(left)
+        self.add_widget(right)
+        left.bind(on_release=lambda x: self.shift_callback(1))
+        right.bind(on_release=lambda x: self.shift_callback(0))
 
     def update_rect(self, *kargs):
         self.rect.pos = self.pos
         self.rect.size = self.size
+
+    """Left and Right Button Callback: 
+    if d = 1 then left button was pressed, 
+    if d = 0 then right button was pressed."""
+
+    def shift_callback(self, instance, d):
+        for widget in self.walk(restrict=True):
+            if (type(widget)is child.ChildWidget):
+                widget.set_block(d)

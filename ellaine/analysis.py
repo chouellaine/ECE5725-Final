@@ -114,7 +114,7 @@ def getOnset(f):
         total_frames += read
         if read < hop_s:
             break
-    print(repr(pitches))
+    # print(repr(pitches))
     return onsets, vel, pitches
 
 
