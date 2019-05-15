@@ -90,11 +90,7 @@ def getOnset(f):
         if o(samples) and p > 0:
             onsets.append(o.get_last_s())
             pitches.append(p)
-        """elif p > 0:
-            next_sample, read = s()
-            p_next = pitch_o(next_sample)[0]
-            if p_next <= 0:
-                onsets.append(t)"""
+
         if new_note[0] != 0:
             vel.append(new_note[1])
         total_frames += read
@@ -168,14 +164,6 @@ def analyze(stu, prof):
 
     stud_filt = createFilterFile(stu)
     prof_filt = createFilterFile(prof)
-    """
-    filter_p1 = Process(target=applyFilter, args=(stu, stud_filt,))
-    filter_p2 = Process(target=applyFilter, args=(prof, prof_filt))
-    filter_p1.start()
-    filter_p2.start()
-    filter_p1.join()
-    filter_p2.join()
-    """
     pool_1 = Pool(processes=10)
     r1 = pool_1.apply_async(applyFilter, (stu, stud_filt, ))
     r2 = pool_1.apply_async(applyFilter, (prof, prof_filt, ))
@@ -189,5 +177,7 @@ def analyze(stu, prof):
     return result
 
 
+"""
 if __name__ == '__main__':
     analyze('twinkstud.wav', 'twinkprof.wav')
+"""

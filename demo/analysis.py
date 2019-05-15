@@ -155,5 +155,7 @@ def analyze(stu, prof):
     return result
 
 
+"""
 if __name__ == '__main__':
     analyze('twinkstud.wav', 'twinkprof.wav')
+"""
