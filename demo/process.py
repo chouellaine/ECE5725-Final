@@ -2,6 +2,7 @@ from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.button import Button
 from kivy.graphics import Color, Rectangle
 from kivy.core.audio import SoundLoader
+from kivy.uix.image import Image
 import border
 import home
 import analysis
@@ -25,6 +26,10 @@ class ProcessWidget(FloatLayout):
             stud_file, prof_file)
         stud_sound = wave.open(stud_file)
         prof_sound = wave.open(prof_file)
+
+        cmap = Image(source='cmap.png', pos_hint={
+            'center_x': .5, 'center_y': .3}, size_hint=(0.7, 0.1))
+        self.add_widget(cmap)
 
         self.add_widget(
             border.BorderWidget(
