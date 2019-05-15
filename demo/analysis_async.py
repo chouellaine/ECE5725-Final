@@ -178,7 +178,7 @@ def analyze(stu, prof):
     """
     pool_1 = Pool(processes=10)
     r1 = pool_1.apply_async(applyFilter, (stu, stud_filt, ))
-    r2 = pool_1.apply_async(getOnset, (prof, prof_filt, ))
+    r2 = pool_1.apply_async(applyFilter, (prof, prof_filt, ))
     pool_1.close()
     pool_1.join()
 
