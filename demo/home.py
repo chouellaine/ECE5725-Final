@@ -44,6 +44,13 @@ class HomeWidget(FloatLayout):
         )
 
         self.add_widget(record_stud)
+        self.add_widget(Button(
+            size_hint=(0.4, 0.06),
+            pos_hint={'center_x': .5, 'center_y': .8},
+            text="Piano Performance Tracking",
+            background_normal='',
+            background_color=[0, 0, 0, 1]
+        ))
 
         record_prof = Button(
             id="record_prof",
