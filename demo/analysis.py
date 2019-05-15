@@ -153,3 +153,7 @@ def analyze(stu, prof):
         if file.startswith("filtered"):
             os.remove(file)
     return result
+
+
+if __name__ == '__main__':
+    analyze('twinkstud.wav', 'twinkprof.wav')
