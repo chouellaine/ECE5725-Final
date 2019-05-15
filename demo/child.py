@@ -31,7 +31,6 @@ class ChildWidget(FloatLayout):
         self.curr_block = 0
         _, _, _, p = zip(*(kwargs.get("f")))
         self.max_freq = max(p)
-        print("max freq" + str(max(p)))
         self.init_notes(kwargs.get("f"))
         self.show_notes()
 
@@ -65,8 +64,6 @@ class ChildWidget(FloatLayout):
 
     def map_time(self, t):
         factor = int(t / BLOCK_LEN)
-        print("factor:" + str(factor))
-        print("t: " + str(t))
         adj = t - (BLOCK_LEN * factor)
         return (adj/BLOCK_LEN)
 
@@ -76,12 +73,10 @@ class ChildWidget(FloatLayout):
     """
 
     def map_coord(self, t_start, t_end, p):
-        print("freq: " + str(p))
         x_l = self.map_time(t_start)
         x_len = self.map_time(t_end)
         y = round(p/self.get_maxf(), 4)
         y = y - 0.2  # top margin
-        print("y_len: "+repr(y))
         return x_l, x_len, y
 
     """
@@ -90,7 +85,6 @@ class ChildWidget(FloatLayout):
     """
 
     def init_notes(self, f):
-        # print(repr(f))
         i = 0
         pad = 0.1
         for n in f:
@@ -117,15 +111,9 @@ class ChildWidget(FloatLayout):
     def show_notes(self):
         min_time = self.get_curr_block() * BLOCK_LEN
         max_time = (self.get_curr_block() + 1) * BLOCK_LEN
-        # print("min: " + str(min_time))
-        # print("max: " + str(max_time))
         for widget in self.walk(restrict=True):
             if (type(widget)is note.Note):
                 if min_time <= widget.get_end()and widget.get_end() <= max_time and min_time <= widget.get_start()and widget.get_start() <= max_time:
-                    # print("start: "+str(widget.get_start()))
-                    # print("end: "+str(widget.get_end()))
-                    # print("coord: "+repr(widget.pos_hint))
-                    # print("len: "+repr(widget.size_hint))
                     widget.set_color(widget.get_alpha())
                 else:
                     widget.set_color(0)
