@@ -139,16 +139,16 @@ Returns:
 
 
 def getInfo(stu, prof):
-    pool_1 = Pool(processes=2)
+    pool_1 = Pool(processes=10)
     r1 = pool_1.apply_async(getOnset, (stu, ))
     r2 = pool_1.apply_async(getOnset, (prof, ))
     r1.ready()
     r2.ready()
-    t1, v1, p1 = r1.get(timeout=TIMEOUT)
-    t2, v2, p2 = r2.get(timeout=TIMEOUT)
+    t1, v1, p1 = r1.get()
+    t2, v2, p2 = r2.get()
     pool_1.close()
     pool_1.join()
-    pool_2 = Pool(processes=3)
+    pool_2 = Pool(processes=10)
     r3 = pool_2.apply_async(getTimes, (t1, ))
     r4 = pool_2.apply_async(getTimes, (t2, ))
     r5 = pool_2.apply_async(mapVel, (v1, v2, ))
@@ -179,9 +179,5 @@ def analyze(stu, prof):
             os.remove(file)
     return result
 
-
-"""
-
-
 if __name__ == '__main__':
-    analyze('twinkstud.wav', 'twinkprof.wav')"""
+    analyze('twinkstud.wav', 'twinkprof.wav')
