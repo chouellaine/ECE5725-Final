@@ -156,6 +156,7 @@ def analyze(stu, prof):
     applyFilter(stu, stud_filt)
     applyFilter(prof, prof_filt)
     result = getInfo(stud_filt, prof_filt)
-    os.remove(stud_filt)
-    os.remove(prof_filt)
+    for file in os.listdir(os.getcwd()):
+        if file.startswith("filtered"):
+            os.remove(file)
     return result
