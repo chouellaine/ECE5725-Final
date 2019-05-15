@@ -7,6 +7,7 @@ from kivy.uix.image import Image
 import border
 import home
 import analysis
+import analysis_async
 import wave
 import os
 
@@ -23,7 +24,7 @@ class ProcessWidget(FloatLayout):
         self.bind(size=self.update_rect)
         stud_file = kwargs.get("stud")
         prof_file = kwargs.get("prof")
-        stud, prof = analysis.analyze(
+        stud, prof = analysis_async.analyze(
             stud_file, prof_file)
         stud_sound = wave.open(stud_file)
         prof_sound = wave.open(prof_file)
