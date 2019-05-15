@@ -1,5 +1,5 @@
 """
-analysis.py uses the aubio library package to identify notes,
+aubioFilter.py uses the aubio library package to identify notes,
 start times and note velocity for each note. Note velocity is a measure
 of how rapidly and forcefully a key was pressed.
 Based on the data, it displays the performance tracking of the two audio files
@@ -14,6 +14,7 @@ from aubio import source, notes, onset, digital_filter, sink, pitch
 import numpy as np
 import matplotlib as mpl
 import matplotlib.cm as cm
+from multiprocessing import Process, Queue, Pool
 
 win_s = 512  # fft size
 hop_s = 512 // 2  # hop size
@@ -89,7 +90,11 @@ def getOnset(f):
         if o(samples) and p > 0:
             onsets.append(o.get_last_s())
             pitches.append(p)
-
+        """elif p > 0:
+            next_sample, read = s()
+            p_next = pitch_o(next_sample)[0]
+            if p_next <= 0:
+                onsets.append(t)"""
         if new_note[0] != 0:
             vel.append(new_note[1])
         total_frames += read
@@ -134,11 +139,22 @@ Returns:
 
 
 def getInfo(stu, prof):
-    t1, v1, p1 = getOnset(stu)
-    t1_s, t1_e = getTimes(t1)
-    t2, v2, p2 = getOnset(prof)
-    t2_s, t2_e = getTimes(t2)
-    c1, c2 = mapVel(v1, v2)
+    pool_1 = Pool(processes=2)
+    r1 = pool_1.apply_async(getOnset, (stu, ))
+    r2 = pool_1.apply_async(getOnset, (prof, ))
+    t1, v1, p1 = r1.get(timeout=1)
+    t2, v2, p2 = r2.get(timeout=1)
+    pool_1.close()
+    pool_1.join()
+    pool_2 = Pool(processes=3)
+    r1 = pool_2.apply_async(getTimes, (t1, ))
+    r2 = pool_2.apply_async(getTimes, (t2, ))
+    r3 = pool_2.apply_async(mapVel, (v1, v2, ))
+    t1_s, t1_e = r1.get(timeout=1)
+    t2_s, t2_e = r2.get(timeout=1)
+    c1, c2 = r3.get(timeout=1)
+    pool_2.close()
+    pool_2.join()
     return zip(t1_s, t1_e, c1, p1), zip(t2_s, t2_e, c2, p2)
 
 
@@ -146,10 +162,21 @@ def analyze(stu, prof):
     # FIRST FILE MUST BE STUDENT's, SECOND FILE MUST BE PROF's
     stud_filt = createFilterFile(stu)
     prof_filt = createFilterFile(prof)
-    applyFilter(stu, stud_filt)
-    applyFilter(prof, prof_filt)
+    filter_p1 = Process(target=applyFilter, args=(stu, stud_filt,))
+    filter_p2 = Process(target=applyFilter, args=(prof, prof_filt))
+    filter_p1.start()
+    filter_p2.start()
+    filter_p1.join()
+    filter_p2.join()
     result = getInfo(stud_filt, prof_filt)
     for file in os.listdir(os.getcwd()):
         if file.startswith("filtered"):
             os.remove(file)
     return result
+
+
+"""
+
+
+if __name__ == '__main__':
+    analyze('twinkstud.wav', 'twinkprof.wav')"""
