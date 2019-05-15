@@ -1,5 +1,6 @@
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.button import Button
+from kivy.uix.label import Label
 from kivy.graphics import Color, Rectangle
 from kivy.core.audio import SoundLoader
 from kivy.uix.image import Image
@@ -26,21 +27,6 @@ class ProcessWidget(FloatLayout):
             stud_file, prof_file)
         stud_sound = wave.open(stud_file)
         prof_sound = wave.open(prof_file)
-
-        cmap = Image(source='cmap.png', pos_hint={
-            'center_x': .5, 'center_y': .3}, size_hint=(0.7, 0.1))
-
-        self.add_widget(cmap)
-
-        self.add_widget(Button(
-                        text="Student",
-                        size_hint=(0.1, 0.04),
-                        pos_hint=('center_x': 0.1, 'center_y': 0.8)))
-
-        self.add_widget(Button(
-                        text="Professional",
-                        size_hint=(0.1, 0.04),
-                        pos_hint=('center_x': 0.1, 'center_y': 0.5)))
 
         self.add_widget(
             border.BorderWidget(
@@ -82,6 +68,35 @@ class ProcessWidget(FloatLayout):
         quit.bind(on_release=self.quit_callback)
 
         self.add_widget(quit)
+
+        cmap = Image(source='cmap.png', pos_hint={
+            'center_x': .94, 'center_y': .53}, size_hint=(0.1, 0.7))
+
+        self.add_widget(cmap)
+
+        self.add_widget(Label(
+            text="Soud",
+            color=[0.0, 0.0, 0.0, 1.0],
+            size_hint=(0.1, 0.1),
+            pos_hint={'x': 0.89, 'center_y': 0.9}))
+
+        self.add_widget(Label(
+            text="Loud",
+            color=[0.0, 0.0, 0.0, 1.0],
+            size_hint=(0.1, 0.08),
+            pos_hint={'x': 0.89, 'center_y': 0.15}))
+
+        self.add_widget(Label(
+            text="Student",
+            color=[0.0, 0.0, 0.0, 1.0],
+            size_hint=(0.1, 0.1),
+            pos_hint={'x': 0.08, 'center_y': 0.96}))
+
+        self.add_widget(Label(
+            text="Professional",
+            color=[0.0, 0.0, 0.0, 1.0],
+            size_hint=(0.1, 0.1),
+            pos_hint={'x': 0.1, 'center_y': 0.509}))
 
     def home_page(self, instance):
         self.add_widget(
