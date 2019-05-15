@@ -15,8 +15,8 @@ import numpy as np
 import matplotlib as mpl
 import matplotlib.cm as cm
 
-win_s = 4096  # fft size
-hop_s = 512   # hop size
+win_s = 512  # fft size
+hop_s = 512 // 2  # hop size
 
 """createFilterfile creates a new file name for the filtered audio file"""
 
@@ -57,7 +57,7 @@ def applyFilter(path, target):
 
 """
 getOnset gives the start time for each identified note in seconds.
-f is the filename of the audio file. 
+f is the filename of the audio file.
 """
 
 
@@ -83,16 +83,25 @@ def getOnset(f):
     while True:
         samples, read = s()
         p = pitch_o(samples)[0]
-        #p = int(round(p))
-        if o(samples):
+        new_note = notes_o(samples)
+        t = total_frames/float(samplerate)
+
+        if o(samples) and p > 0:
             onsets.append(o.get_last_s())
             pitches.append(p)
-        new_note = notes_o(samples)
-        if (new_note[0] != 0):
+        """elif p > 0:
+            next_sample, read = s()
+            p_next = pitch_o(next_sample)[0]
+            if p_next <= 0:
+                onsets.append(t)"""
+        if new_note[0] != 0:
             vel.append(new_note[1])
         total_frames += read
         if read < hop_s:
             break
+    # print(repr(onsets))
+    print("______________")
+    print(repr(pitches))
     return onsets, vel, pitches
 
 
@@ -118,18 +127,16 @@ getTimes returns the adjusted start times and end times for each note in [t]
 
 
 def getTimes(t):
-    # print(timePoints)
     time_np = np.array(t)
-    time_np = time_np - time_np[0]
     time_diff = np.diff(time_np)
     return time_np.tolist(), time_diff.tolist()
 
 
 """
-getInfo gathers all the information needed for the audio files, stu and prof. 
-Returns: 
+getInfo gathers all the information needed for the audio files, stu and prof.
+Returns:
 -[t1_end] and [t2_end]: array of start and end times in sec of each note
-- [c1] and [c2]: array of note velocity 
+- [c1] and [c2]: array of note velocity
 """
 
 
@@ -149,6 +156,6 @@ def analyze(stu, prof):
     applyFilter(stu, stud_filt)
     applyFilter(prof, prof_filt)
     result = getInfo(stud_filt, prof_filt)
-    os.remove(stud_filt)
-    os.remove(prof_filt)
+    # os.remove(stud_filt)
+    # os.remove(prof_filt)
     return result
