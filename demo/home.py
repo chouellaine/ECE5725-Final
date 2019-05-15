@@ -125,7 +125,8 @@ class HomeWidget(FloatLayout):
     def quit_callback(self, instance):
         for file in os.listdir("/"):
             if file.endswith(".pyc"):
-            os.remove(file)
+                os.remove(file)
+
         quit()
 
     def bash_record_stud(self, *args):
