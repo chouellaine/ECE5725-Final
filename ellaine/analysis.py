@@ -156,6 +156,6 @@ def analyze(stu, prof):
     applyFilter(stu, stud_filt)
     applyFilter(prof, prof_filt)
     result = getInfo(stud_filt, prof_filt)
-    # os.remove(stud_filt)
-    # os.remove(prof_filt)
+    os.remove(stud_filt)
+    os.remove(prof_filt)
     return result
