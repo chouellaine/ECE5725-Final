@@ -9,7 +9,7 @@ import os.path
 
 import os
 os.putenv('SDL_VIDEODRIVER','fbcon')
-os.putenv('SDL_FBDEV','/dev/fb1')
+os.putenv('SDL_FBDEV','/dev/fb0')
 
 import note
 import wave
