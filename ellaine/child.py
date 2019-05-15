@@ -67,8 +67,8 @@ class ChildWidget(FloatLayout):
         factor = int(t / BLOCK_LEN)
         print("factor:" + str(factor))
         print("t: " + str(t))
-        max = BLOCK_LEN * (factor + 1)
-        return (t/max)
+        adj = t - (BLOCK_LEN * factor)
+        return (adj/BLOCK_LEN)
 
     """
     [map_coord] converts information from analysis.py into the appropriate
