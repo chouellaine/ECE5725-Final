@@ -7,6 +7,10 @@ from kivy.uix.popup import Popup
 from pathlib import Path
 import os.path
 
+import os
+os.putenv('SDL_VIDEODRIVER','fbcon')
+os.putenv('SDL_FBDEV','/dev/fb1')
+
 import note
 import wave
 import process
