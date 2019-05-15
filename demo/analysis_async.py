@@ -15,7 +15,7 @@ import numpy as np
 import matplotlib as mpl
 import matplotlib.cm as cm
 from multiprocessing import Process, Queue, Pool
-
+TIMEOUT = 3
 win_s = 512  # fft size
 hop_s = 512 // 2  # hop size
 
@@ -142,16 +142,16 @@ def getInfo(stu, prof):
     pool_1 = Pool(processes=2)
     r1 = pool_1.apply_async(getOnset, (stu, ))
     r2 = pool_1.apply_async(getOnset, (prof, ))
-    t1, v1, p1 = r1.get(timeout=1)
-    t2, v2, p2 = r2.get(timeout=1)
+    t1, v1, p1 = r1.get(timeout=TIMEOUT)
+    t2, v2, p2 = r2.get(timeout=TIMEOUT)
     pool_1.close()
     pool_1.join()
     pool_2 = Pool(processes=3)
     r1 = pool_2.apply_async(getTimes, (t1, ))
     r2 = pool_2.apply_async(getTimes, (t2, ))
     r3 = pool_2.apply_async(mapVel, (v1, v2, ))
-    t1_s, t1_e = r1.get(timeout=1)
-    t2_s, t2_e = r2.get(timeout=1)
+    t1_s, t1_e = r1.get(timeout=TIMEOUT)
+    t2_s, t2_e = r2.get(timeout=TIMEOUT)
     c1, c2 = r3.get(timeout=1)
     pool_2.close()
     pool_2.join()
