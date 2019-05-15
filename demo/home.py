@@ -1,3 +1,7 @@
+import bash_record
+import process
+import wave
+import note
 from kivy.graphics import Color, Rectangle
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.button import Button
@@ -8,20 +12,17 @@ from pathlib import Path
 import os.path
 
 import os
-os.putenv('SDL_VIDEODRIVER','fbcon')
-os.putenv('SDL_FBDEV','/dev/fb1')
+os.putenv('SDL_VIDEODRIVER', 'fbcon')
+os.putenv('SDL_FBDEV', '/dev/fb1')
 os.putenv('SDL_MOUSEDRV', 'TSLIB')
 os.putenv('SDL_MOUSEDEV', '/dev/input/touchscreen')
 
-import note
-import wave
-import process
-import bash_record
 
 global stud_file
 global prof_file
 stud_file = ""
 prof_file = ""
+
 
 class HomeWidget(FloatLayout):
 
@@ -34,58 +35,58 @@ class HomeWidget(FloatLayout):
         self.bind(size=self.update_rect)
 
         record_stud = Button(
-             id="record_stud",
-             size_hint=(0.3, 0.06),
-             pos_hint={'center_x': .5, 'center_y': .6},
-             text="Record the student",
-             background_normal='',
-             background_color=[0, 0, 0, 1]
+            id="record_stud",
+            size_hint=(0.3, 0.06),
+            pos_hint={'center_x': .5, 'center_y': .6},
+            text="Record the student",
+            background_normal='',
+            background_color=[0, 0, 0, 1]
         )
-    
+
         self.add_widget(record_stud)
-        
+
         record_prof = Button(
-             id="record_prof",
-             size_hint=(0.35, 0.06),
-             pos_hint={'center_x': .5, 'center_y': .5},
-             text="Record the professional",
-             background_normal='',
-             background_color=[0, 0, 0, 1]
+            id="record_prof",
+            size_hint=(0.35, 0.06),
+            pos_hint={'center_x': .5, 'center_y': .5},
+            text="Record the professional",
+            background_normal='',
+            background_color=[0, 0, 0, 1]
         )
-    
+
         self.add_widget(record_prof)
 
         upload_stud = Button(
-             id="upload_stud",
-             size_hint=(0.4, 0.06),
-             pos_hint={'center_x': .5, 'center_y': .4},
-             text="Upload the student recording",
-             background_normal='',
-             background_color=[0, 0, 0, 1]
+            id="upload_stud",
+            size_hint=(0.4, 0.06),
+            pos_hint={'center_x': .5, 'center_y': .4},
+            text="Upload the student recording",
+            background_normal='',
+            background_color=[0, 0, 0, 1]
         )
-    
+
         self.add_widget(upload_stud)
-        
+
         upload_prof = Button(
-             id="upload_prof",
-             size_hint=(0.4, 0.06),
-             pos_hint={'center_x': .5, 'center_y': .3},
-             text="Upload the professional recording",
-             background_normal='',
-             background_color=[0, 0, 0, 1]
+            id="upload_prof",
+            size_hint=(0.4, 0.06),
+            pos_hint={'center_x': .5, 'center_y': .3},
+            text="Upload the professional recording",
+            background_normal='',
+            background_color=[0, 0, 0, 1]
         )
-    
+
         self.add_widget(upload_prof)
 
         process = Button(
-             id="process",
-             size_hint=(0.1, 0.06),
-             pos_hint={'center_x': .5, 'center_y': .2},
-             text="Process",
-             background_normal='',
-             background_color=[0.5, 0.5, 0.6, 0.7]
+            id="process",
+            size_hint=(0.1, 0.06),
+            pos_hint={'center_x': .5, 'center_y': .2},
+            text="Process",
+            background_normal='',
+            background_color=[0.5, 0.5, 0.6, 0.7]
         )
-        
+
         self.add_widget(process)
 
         quit = Button(
@@ -119,16 +120,19 @@ class HomeWidget(FloatLayout):
                     prof=prof_file,
                     size_hint=(1, 1),
                     pos_hint={'center_x': .5, 'center_y': .5})
-                )
-    
+            )
+
     def quit_callback(self, instance):
+        for file in os.listdir("/"):
+            if file.endswith(".pyc"):
+            os.remove(file)
         quit()
 
     def bash_record_stud(self, *args):
         global stud_file
         bash_record.record_stud()
         stud_file = 'stud.wav'
-    
+
     def bash_record_prof(self, *args):
         global prof_file
         bash_record.record_prof()
@@ -136,7 +140,8 @@ class HomeWidget(FloatLayout):
 
     def open_stud_file_btn_pressed(self, *args):
         user_path = '~/Downloads/ece5725_final_project/ellaine'
-        self._fbrowser = FileBrowser(select_string='Open',favorites=[(user_path, 'Documents')])
+        self._fbrowser = FileBrowser(select_string='Open', favorites=[
+                                     (user_path, 'Documents')])
         self._fbrowser.bind(on_success=self._stud_file_load,
                             on_canceled=self._cancel_popup)
 
@@ -144,7 +149,7 @@ class HomeWidget(FloatLayout):
                             size_hint=(0.9, 0.9), auto_dismiss=False)
 
         self._popup.open()
-    
+
     def open_prof_file_btn_pressed(self, *args):
         self._fbrowser = FileBrowser(select_string='Open')
         self._fbrowser.bind(on_success=self._prof_file_load,
@@ -154,11 +159,11 @@ class HomeWidget(FloatLayout):
                             size_hint=(0.9, 0.9), auto_dismiss=False)
 
         self._popup.open()
-    
+
     def _cancel_popup(self, instance):
         print('cancelled, Close self.')
         self._popup.dismiss()
-    
+
     def _stud_file_load(self, instance):
         print("in stud file load")
         global stud_file
@@ -176,5 +181,3 @@ class HomeWidget(FloatLayout):
     def update_rect(self, *kargs):
         self.rect.pos = self.pos
         self.rect.size = self.size
-
-

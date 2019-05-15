@@ -42,14 +42,14 @@ class ProcessWidget(FloatLayout):
                 pos_hint={'center_x': .5, 'center_y': .75}))
 
         home = Button(
-           id="home",
-           size_hint=(0.1, 0.06),
-           pos_hint={'center_x': .1, 'center_y': .05},
-           text="Back",
-           background_normal='',
-           background_color=[0.5, 0.5, 0.6, 0.7]
+            id="home",
+            size_hint=(0.1, 0.06),
+            pos_hint={'center_x': .1, 'center_y': .05},
+            text="Back",
+            background_normal='',
+            background_color=[0.5, 0.5, 0.6, 0.7]
         )
-           
+
         self.add_widget(home)
 
         quit = Button(
@@ -60,7 +60,7 @@ class ProcessWidget(FloatLayout):
             background_normal='',
             background_color=[0.5, 0.5, 0.6, 0.7]
         )
-        
+
         home.bind(on_release=self.home_page)
         quit.bind(on_release=self.quit_callback)
 
@@ -72,10 +72,12 @@ class ProcessWidget(FloatLayout):
                 id="home",
                 size_hint=(1, 1),
                 pos_hint={'center_x': .5, 'center_y': .5})
-            )
-    
-    
+        )
+
     def quit_callback(self, instance):
+        for file in os.listdir("/"):
+            if file.endswith(".pyc"):
+            os.remove(file)
         quit()
 
     def update_rect(self, *kargs):
