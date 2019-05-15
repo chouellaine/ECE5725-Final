@@ -35,12 +35,12 @@ class ProcessWidget(FloatLayout):
         self.add_widget(Button(
                         text="Student",
                         size_hint=(0.1, 0.04),
-                        pos_hint=('center_x:': 0.1, 'center_y:': 0.8)))
+                        pos_hint=('center_x': 0.1, 'center_y': 0.8)))
 
         self.add_widget(Button(
                         text="Professional",
                         size_hint=(0.1, 0.04),
-                        pos_hint=('center_x:': 0.1, 'center_y:': 0.5)))
+                        pos_hint=('center_x': 0.1, 'center_y': 0.5)))
 
         self.add_widget(
             border.BorderWidget(
