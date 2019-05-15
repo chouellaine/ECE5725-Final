@@ -1,7 +1,9 @@
 import subprocess
 
 def record_stud():
-    subprocess.call("recordstud.sh")
+    cmd = "arecord --device=hw:1,0 --format S16_LE --rate 44100 --duration 5 -c1 stud.wav"
+    subprocess.check_output(cmd, shell=True)
 
 def record_prof():
-    subprocess.call("recordprof.sh", shell=True)
+    cmd = "arecord --device=hw:1,0 --format S16_LE --rate 44100 --duration 5 -c1 prof.wav"
+    subprocess.check_output(cmd, shell=True)
