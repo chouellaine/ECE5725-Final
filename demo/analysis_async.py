@@ -165,19 +165,29 @@ def getInfo(stu, prof):
 
 def analyze(stu, prof):
     # FIRST FILE MUST BE STUDENT's, SECOND FILE MUST BE PROF's
+
     stud_filt = createFilterFile(stu)
     prof_filt = createFilterFile(prof)
+    """
     filter_p1 = Process(target=applyFilter, args=(stu, stud_filt,))
     filter_p2 = Process(target=applyFilter, args=(prof, prof_filt))
     filter_p1.start()
     filter_p2.start()
     filter_p1.join()
     filter_p2.join()
+    """
+    pool_1 = Pool(processes=10)
+    r1 = pool_1.apply_async(applyFilter, (stu, stud_filt, ))
+    r2 = pool_1.apply_async(getOnset, (prof, prof_filt, ))
+    pool_1.close()
+    pool_1.join()
+
     result = getInfo(stud_filt, prof_filt)
     for file in os.listdir(os.getcwd()):
         if file.startswith("filtered"):
             os.remove(file)
     return result
+
 
 if __name__ == '__main__':
     analyze('twinkstud.wav', 'twinkprof.wav')
