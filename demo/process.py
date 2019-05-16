@@ -76,7 +76,7 @@ class ProcessWidget(FloatLayout):
         self.add_widget(cmap)
 
         self.add_widget(Label(
-            text="Soud",
+            text="Soft",
             color=[0.0, 0.0, 0.0, 1.0],
             size_hint=(0.1, 0.1),
             pos_hint={'x': 0.89, 'center_y': 0.9}))

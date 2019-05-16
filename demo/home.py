@@ -146,7 +146,8 @@ class HomeWidget(FloatLayout):
         prof_file = 'prof.wav'
 
     def open_stud_file_btn_pressed(self, *args):
-        user_path = '~/Downloads/ece5725_final_project/ellaine'
+        user_path = os.getcwd()
+        #user_path = '~/ece5725_final_project/demo' #CHANGE USER PATH OF DOWNLOADS 
         self._fbrowser = FileBrowser(select_string='Open', favorites=[
                                      (user_path, 'Documents')])
         self._fbrowser.bind(on_success=self._stud_file_load,
