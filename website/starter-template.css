@@ -1,0 +1,28 @@
+body {
+    padding-top: 50px;
+}
+
+.starter-template {
+  padding: 40px 15px;
+  text-align: center;
+}
+
+hr { margin: 20px 0 20px 0; }
+
+.center-block {  
+    width:640px;
+  display: block;  
+  margin-right: auto;  
+  margin-left: auto;  
+}
+
+.piano {
+    width: 1000px;
+    height: 450px;
+    background-image: url("pics/piano_main.jpg");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 950px 650px;
+    margin-left: auto;
+    margin-right: auto;
+}

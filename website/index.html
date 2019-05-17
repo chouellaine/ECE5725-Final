@@ -1,0 +1,312 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>ECE5725 Piano Performance Tracker</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <!-- <link href="../../assets/css/ie10-viewport-bug-workaround.css" rel="stylesheet"> -->
+
+    <!-- Custom styles for this template -->
+    <link href="starter-template.css" rel="stylesheet">
+
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+    <!-- <script src="../../assets/js/ie-emulation-modes-warning.js"></script> -->
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Project name</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Home</a></li>
+            <li><a href="#obj">Objective</a></li>
+            <li><a href="#intro">Introduction</a></li>
+            <li><a href="#design">Design and Testing</a></li>
+            <li><a href="#results">Results</a></li>
+            <li><a href="#conclusion">Conclusion</a></li>
+            <li><a href="#future">Future Work</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+
+    <div class="container">
+
+        <div class="starter-template">
+            <h1>Piano Performance Tracker</h1>
+            <p class="lead">May 17 2019<br /> Shanee Lu (sl2363) and Ellaine Chou (ec695)</p>
+        </div>
+
+        <hr>
+        <div class="center-block">
+            <iframe width="640" height="360" src="https://www.youtube.com/watch?v=wlU1c6Cjftw&feature=youtu.be" frameborder="0" allowfullscreen></iframe>
+            <h4 style="text-align:center;">Video Demo</h4>
+        </div>
+
+        <hr id="obj">
+
+        <div style="text-align:center;">
+            <h2>Objective</h2>
+            <p style="text-align: center;padding: 0px 30px; font-size: 18px;">
+                The objective of this project is to build a tool for amateur musicians to help them quantify and easily identify the areas they can improve upon.
+                Using a simple user interface, students can compare their recordings against those of a professional and focus on the nuances that help
+                accelerate their development.
+                <br />
+                <br />
+            </p>
+            <div class="piano" style="text-align:center; padding: 0px 30px;"></div>
+        </div>
+
+        <hr id='intro'>
+
+        <div class="row">
+            <div class="col-md-12" style="font-size:18px;">
+                <h2 style="text-align:center;">Introduction</h2>
+                <p style="text-align: center;padding: 0px 30px;">
+                    One of the struggles as an amateur musician is the inability to detect nuances and identify where they fall flat in a performance. We help pianists document and visualize where they could use improvement. From the Pi, the student can record a performance, process the recording, and display the results against a professional recording. This allows the musician to see gaps in their performance- if they rushed a certain portion or were unable to figure out the expressivity and nuances of a musical phrase.
+
+                    This project is an example of an embedded system because it requires external hardware and makes use of the Raspberry Pi’s Linux kernel extensively.
+                    <br />
+                    We process the signals received from a USB microphone, use filters to remove unnecessary noise and smooth amplitude over time, use FFT to document the notes being played while adjusting for harmonics and interval size, and display this in a simple, user-friendly interface without requiring excessive processing time or memory usage.
+                </p>
+            </div>
+        </div>
+
+        <hr id='design'>
+
+        <div style="text-align:center;">
+            <h2>Design and Testing</h2>
+            <h3>Overall Setup</h3>
+            <img class="img" src="pics/setup.png" alt="setup diagram" width="350" height="300" style="padding: 30px;">
+            <p style="text-align: center;padding: 0px 30px;">
+                Figure 1. Overall setup of the project. <br /> <br />
+                Hardware: Mini USB microphone, RaspberryPi Model 3B, Monitor, keyboard, mouse, power cable<br />
+                Software: Python (packages: kivy, aubio, numpy, matplotlib)
+                <br /> <br />
+            </p>
+            <h3>GUI Layout</h3>
+            <p style="text-align: center;padding: 10px 0px;">
+                Once the physical setup was arranged (as shown in Figure 1), we designed the software layout for the piano performance tracker. Figure 2 shows the landing page for the user to navigate from. This GUI allows the student and professional to upload or record a piece, process the results, toggle between measures, and return home or quit the page.
+            </p>
+            <img class="img" src="pics/homepg.jpeg" alt="home page" width="700" height="450" style="padding:0px 0px;">
+            <p style="text-align: center;padding: 0px 0px;"> Figure 2. Home page. </p>
+            <img class="img" src="pics/analysis1.jpeg" alt="analysis 1" width="700" height="450" style="padding:0px 0px;">
+            <p style="text-align: center;padding: 0px 0px;"> Figure 3. Analysis results. </p>
+            <h3>Processing</h3>
+            <p style="text-align: center;padding:10px 30px;">
+                Before we began implementing the GUI, we needed to ensure that the core components of our project would work properly. We first tested the hardware (USB microphone)
+                by running the following bash script. We adjusted settings on the Pi to maximize input volume and confirmed the .wav file was recorded properly.
+            </p>
+            <!-- HTML generated using hilite.me -->
+            <div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;">
+                <pre style="text-align: left; margin: 0; line-height: 125%">
+                <span style="color: #008800; font-weight: bold">import</span> <span style="color: #0e84b5; font-weight: bold">subprocess</span>
+                <span style="color: #008800; font-weight: bold">def</span> <span style="color: #0066BB; font-weight: bold">record_stud</span>():
+                cmd <span style="color: #333333">=</span> <span style="background-color: #fff0f0">&quot;arecord --device=hw:1,0 --format S16_LE --rate 44100 --duration 5 -c1 stud.wav&quot;</span>
+                subprocess<span style="color: #333333">.</span>check_output(cmd, shell<span style="color: #333333">=</span><span style="color: #007020">True</span>)
+                <span style="color: #008800; font-weight: bold">def</span> <span style="color: #0066BB; font-weight: bold">record_prof</span>():
+                cmd <span style="color: #333333">=</span> <span style="background-color: #fff0f0">&quot;arecord --device=hw:1,0 --format S16_LE --rate 44100 --duration 5 -c1 prof.wav&quot;</span>
+                subprocess<span style="color: #333333">.</span>check_output(cmd, shell<span style="color: #333333">=</span><span style="color: #007020">True</span>)
+            </pre>
+            </div>
+            <p style="text-align: center;padding: 10px 30px;">Code A. Running a bash script to record from the USB microphone.</p>
+            <p style="text-align: center;padding: 0px 30px;">
+                Now that we had .wav files to work with, we needed to find existing packages that would aid in the FFT processing and noise filtering.
+                We first tried out scipy's spectrogram function and the wave package to visualize the raw data's frequencies and volume. We noticed the harmonic frequencies and inconsistency of frequency power. Figure 4 shows the initial results.
+            </p>
+            <img class="img" src="pics/spec.png" alt="spectrogram" width="500" height="300" style="padding: 10px;">
+            <p style="text-align: center;padding: 0px 30px;"> Figure 4. Initial spectrogram results. </p>
+            <img class="img" src="pics/amp.png" alt="amplitude" width="500" height="300" style="padding: 10px;">
+            <p style="text-align: center;padding: 0px 30px;"> Figure 5. Initial amplitude results. </p>
+            <p style="text-align: center;padding: 10px 30px;">
+                We searched for many libraries and projects online and noticed that accurate identification of piano pitches has not yet been developed.
+                However, after more research , we found that the aubio package had functionalities that would aid our analysis. The three functionalities that aubio
+                helped us analyze were strike speed, pitch, and timing. Strike speed is the velocity at which the user strikes the key. To find strike speed, the initial peak amplitude of the signal
+                and a moving window across the sound wave were used to map the speed to a color on a spectrum of yellow (loud) to purple (soft). Pitch was the frequency that was identified.
+                The y-location of each note, represented as a block, was mapped according to how high the frequency was, similar to the mapping of notes on a musical staff. Lastly, we analyzed the time at which the note was
+                played and plotted the note's x-location accordingly.
+                <br /><br />
+            </p>
+            <h3>GUI</h3>
+            <p style="text-align: center;padding: 10px 30px;">
+                After we confirmed that the audio recording and analysis functions were working properly, we decided to use kivy to implement the GUI. Kivy is an open-source
+                Python framework for developing GUI applications. We created buttons to record and upload the student and professional files, process the results, toggle
+                between measures, return home to re-record or re-upload, and quit. To record a song, we called on a bash script to record with the microphone for 5 seconds and store
+                the recording in the proper format (mono, .wav, 16-bit, 44100 Hz). To upload a file, we used FileBrowser to navigate the directory. To create
+                displays for the analysis, we created a widget with the FloatLayout for the student and one for the professional as well. We tested each of these functions separately
+                to ensure the packages were installed properly and to familiarize ourselves with their implementation. We then integrated the GUI components and lastly, tied in the
+                analysis. We resolved errors with the directories and dependencies and completed the performance tracking tool.
+            </p>
+            <h3>Performance</h3>
+            <p style="text-align: center;padding: 10px 30px;">
+                We noticed that the processing time took quite a while to analyze the two sound files and display the results in the GUI. The original performance of
+                our analysis took 13 seconds, using only one core. To shorten this wait and improve performance, we made use of the Pi's four cores and distributed some of the
+                work in the analysis processing. We used the multiprocessing library and created a pool for each of the major functions (strike speed, timing, and filtering
+                frequency), which represent a pool of processes where work can be offloaded. Each pool used 2-3 processes, one for processing the student file, one
+                for the professional, and in the timing case, one for mapping. After testing this implementation, our processing time dropped to 8 seconds.
+
+            </p>
+            <!-- HTML generated using hilite.me -->
+            <div style="background: #ffffff; text-align:left; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;">
+                <pre style="margin: 0; line-height: 125%">
+                <span style="color: #DD4422">&quot;&quot;&quot;</span>
+                <span style="color: #DD4422">getInfo gathers all the information needed for the audio files, stu and prof.</span>
+                <span style="color: #DD4422">Returns:</span>
+                <span style="color: #DD4422">-[t1_end] and [t2_end]: array of start and end times in sec of each note</span>
+                <span style="color: #DD4422">- [c1] and [c2]: array of note velocity</span>
+                <span style="color: #DD4422">&quot;&quot;&quot;</span>
+
+
+                <span style="color: #008800; font-weight: bold">def</span> <span style="color: #0066BB; font-weight: bold">getInfo</span>(stu, prof):
+                pool_1 <span style="color: #333333">=</span> Pool(processes<span style="color: #333333">=</span><span style="color: #0000DD; font-weight: bold">10</span>)
+                r1 <span style="color: #333333">=</span> pool_1<span style="color: #333333">.</span>apply_async(getOnset, (stu, ))
+                r2 <span style="color: #333333">=</span> pool_1<span style="color: #333333">.</span>apply_async(getOnset, (prof, ))
+                r1<span style="color: #333333">.</span>ready()
+                r2<span style="color: #333333">.</span>ready()
+                t1, v1, p1 <span style="color: #333333">=</span> r1<span style="color: #333333">.</span>get()
+                t2, v2, p2 <span style="color: #333333">=</span> r2<span style="color: #333333">.</span>get()
+                pool_1<span style="color: #333333">.</span>close()
+                pool_1<span style="color: #333333">.</span>join()
+                pool_2 <span style="color: #333333">=</span> Pool(processes<span style="color: #333333">=</span><span style="color: #0000DD; font-weight: bold">10</span>)
+                r3 <span style="color: #333333">=</span> pool_2<span style="color: #333333">.</span>apply_async(getTimes, (t1, ))
+                r4 <span style="color: #333333">=</span> pool_2<span style="color: #333333">.</span>apply_async(getTimes, (t2, ))
+                r5 <span style="color: #333333">=</span> pool_2<span style="color: #333333">.</span>apply_async(mapVel, (v1, v2, ))
+                r3<span style="color: #333333">.</span>ready()
+                r4<span style="color: #333333">.</span>ready()
+                r5<span style="color: #333333">.</span>ready()
+                t1_s, t1_e <span style="color: #333333">=</span> r3<span style="color: #333333">.</span>get(timeout<span style="color: #333333">=</span>TIMEOUT)
+                t2_s, t2_e <span style="color: #333333">=</span> r4<span style="color: #333333">.</span>get(timeout<span style="color: #333333">=</span>TIMEOUT)
+                c1, c2 <span style="color: #333333">=</span> r5<span style="color: #333333">.</span>get(timeout<span style="color: #333333">=</span><span style="color: #0000DD; font-weight: bold">1</span>)
+                pool_2<span style="color: #333333">.</span>close()
+                pool_2<span style="color: #333333">.</span>join()
+                <span style="color: #008800; font-weight: bold">return</span> <span style="color: #007020">zip</span>(t1_s, t1_e, c1, p1), <span style="color: #007020">zip</span>(t2_s, t2_e, c2, p2)
+            </pre>
+            </div>
+            <p style="text-align: center;padding: 20px 30px;">Code B. An instance where we implemented multiprocessing to speed up performance.</p>
+            <img class="img" src="pics/multithreading.png" alt="multithreading" width="900" height="600" style="padding: 10px;">
+            <p style="text-align: center;padding: 0px 30px;">Figure 6. Improvement in processing performance.</p>
+        </div>
+
+        <hr id='results'>
+
+        <div style="text-align:center;">
+            <h2>Results</h2>
+            <p style="text-align: center;padding: 0px 30px;">
+                For the user interface, we were able to execute the piano performance tracker in the way we had envisioned. The GUI interface and workflow followed the
+                initial plan and made it very simple for the user to adapt to. The analysis display was close to what we had imagined but was not 100% accurate
+                with identification of pitches and entry of the notes. Unfortunately, accurate identification of piano frequencies has not been achieved in the
+                audio processing industry as a whole. Given our experience and time frame, we used the resources available to us and were able to produce
+                a minimum viable product that still reveals important discrepancies between a student and professional recording.
+            </p>
+        </div>
+
+        <hr id='conclusion'>
+
+        <div style="text-align:center;">
+            <h2>Conclusion</h2>
+            <p style="text-align: center;padding: 0px 30px;">
+                Our project was able to provide the user with a simple interface to compare their recording against that of a professional. This gave the
+                student insight into their performance, especially in terms of strike speed, which is one of the most difficult skills to master as an amateur
+                musician. We learned that audio processing and filtering of piano frequencies did not work perfectly, as there were phantom notes detected, but
+                volume and time of entry are areas that can still aid the student as they practice.
+            </p>
+        </div>
+
+        <hr id='future'>
+
+        <div style="text-align:center;">
+            <h2>Future Work</h2>
+            <p style="text-align: center;padding: 0px 30px;">
+                We would definitely explore more methods of processing audio files and filtering piano frequencies. We could look into the pattern of frequencies
+                to those in existing pieces, similar to Shazam's strategy of identifying songs. This would allow us to have more data to work with and
+                filter out predictable noise or misinterpretations. Lastly, if we are able to develop more robust filtering, we could incorporate
+                processing of left and right hands to give the user a comprehensive analysis of their performance.
+            </p>
+        </div>
+
+        <hr>
+
+        <div class="row" style="text-align:center;">
+            <h2>Work Distribution</h2>
+            <div style="text-align:center;">
+                <img class="img" src="pics/grouppic.png" alt="Group pic" style="width:500px; padding: 20px;">
+                <p style="text-align: center;padding: 0px 30px;">
+                    The work was distributed as follows: Shanee worked on the project design, including hardware setup, GUI layout, and workflow. She tested
+                    the initial spectrogram and amplitude analysis, recordings, and implemented the GUI's home page, recording, uploading, and page layout.
+                    Ellaine implemented the audio processing, using aubio, numpy, and matplotlib, and displayed the results using kivy. She worked on improving
+                    the Pi's performance with multiprocessing as well.
+                </p>
+            </div>
+        </div>
+
+        <hr>
+        <div style="font-size:18px">
+            <h2>Parts List</h2>
+            <ul>
+                <li>Raspberry Pi $35.00</li>
+                <a href="https://www.adafruit.com/product/3367"><li>Mini USB Microphone $5.95</li></a>
+                <li>Monitor, Keyboard, Mouse, and Cables - Provided in lab</li>
+            </ul>
+            <h3>Total: $40.95</h3>
+        </div>
+        <hr>
+        <div style="font-size:18px">
+            <h2>References</h2>
+            <a href="https://github.com/aubio/aubio/tree/master/python/demos">Aubio Examples</a><br>
+            <a href="https://learn.adafruit.com/usb-audio-cards-with-a-raspberry-pi/recording-audio">Recording Audio on the Raspberry Pi</a><br>
+            <a href="http://getbootstrap.com/">Bootstrap</a><br>
+            <a href="https://docs.python.org/2/library/multiprocessing.html">Python Multiprocessing Documentation</a><br>
+            <a href="http://kivy-garden.github.io/garden.filebrowser/api.html">Kivy FileBrowser Documentation</a><br>
+            <a href="https://kivy.org/doc/stable/guide/widgets.html">Kivy Widget Documentation</a><br>
+
+        </div>
+
+       <hr>
+        <div class="row">
+            <h2>Code Appendix</h2>
+            <a style ="padding-bottom: 100px; font-size:18px;"href="https://github.com/shaneelu/ece5725_final_project/tree/master/demo">The code to our project can be found here  .</a>
+        </div>
+
+    </div><!-- /.container -->
+
+
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
+    <script src="dist/js/bootstrap.min.js"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <!-- <script src="../../assets/js/ie10-viewport-bug-workaround.js"></script> -->
+  </body>
+</html>
