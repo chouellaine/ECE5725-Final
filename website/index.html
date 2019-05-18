@@ -67,7 +67,7 @@
 
         <hr>
         <div class="center-block">
-            <iframe width="640" height="360" src="https://www.youtube.com/watch?v=wlU1c6Cjftw&feature=youtu.be" frameborder="0" allowfullscreen></iframe>
+            <iframe width="640" height="360" src="https://www.youtube.com/watch?v=wlU1c6Cjftw&feature=youtu.be" allowfullscreen></iframe>
             <h4 style="text-align:center;">Video Demo</h4>
         </div>
 
@@ -128,11 +128,11 @@
             <!-- HTML generated using hilite.me -->
             <div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;">
                 <pre style="text-align: left; margin: 0; line-height: 125%">
-                <span style="color: #008800; font-weight: bold">import</span> <span style="color: #0e84b5; font-weight: bold">subprocess</span>
-                <span style="color: #008800; font-weight: bold">def</span> <span style="color: #0066BB; font-weight: bold">record_stud</span>():
+        <span style="color: #008800; font-weight: bold">import</span> <span style="color: #0e84b5; font-weight: bold">subprocess</span>
+            <span style="color: #008800; font-weight: bold">def</span> <span style="color: #0066BB; font-weight: bold">record_stud</span>():
                 cmd <span style="color: #333333">=</span> <span style="background-color: #fff0f0">&quot;arecord --device=hw:1,0 --format S16_LE --rate 44100 --duration 5 -c1 stud.wav&quot;</span>
                 subprocess<span style="color: #333333">.</span>check_output(cmd, shell<span style="color: #333333">=</span><span style="color: #007020">True</span>)
-                <span style="color: #008800; font-weight: bold">def</span> <span style="color: #0066BB; font-weight: bold">record_prof</span>():
+            <span style="color: #008800; font-weight: bold">def</span> <span style="color: #0066BB; font-weight: bold">record_prof</span>():
                 cmd <span style="color: #333333">=</span> <span style="background-color: #fff0f0">&quot;arecord --device=hw:1,0 --format S16_LE --rate 44100 --duration 5 -c1 prof.wav&quot;</span>
                 subprocess<span style="color: #333333">.</span>check_output(cmd, shell<span style="color: #333333">=</span><span style="color: #007020">True</span>)
             </pre>
@@ -176,16 +176,16 @@
             </p>
             <!-- HTML generated using hilite.me -->
             <div style="background: #ffffff; text-align:left; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;">
-                <pre style="margin: 0; line-height: 125%">
-                <span style="color: #DD4422">&quot;&quot;&quot;</span>
-                <span style="color: #DD4422">getInfo gathers all the information needed for the audio files, stu and prof.</span>
-                <span style="color: #DD4422">Returns:</span>
-                <span style="color: #DD4422">-[t1_end] and [t2_end]: array of start and end times in sec of each note</span>
-                <span style="color: #DD4422">- [c1] and [c2]: array of note velocity</span>
-                <span style="color: #DD4422">&quot;&quot;&quot;</span>
+            <pre style="margin: 0; line-height: 125%">
+            <span style="color: #DD4422">&quot;&quot;&quot;</span>
+            <span style="color: #DD4422">getInfo gathers all the information needed for the audio files, stu and prof.</span>
+            <span style="color: #DD4422">Returns:</span>
+            <span style="color: #DD4422">-[t1_end] and [t2_end]: array of start and end times in sec of each note</span>
+            <span style="color: #DD4422">- [c1] and [c2]: array of note velocity</span>
+            <span style="color: #DD4422">&quot;&quot;&quot;</span>
 
 
-                <span style="color: #008800; font-weight: bold">def</span> <span style="color: #0066BB; font-weight: bold">getInfo</span>(stu, prof):
+            <span style="color: #008800; font-weight: bold">def</span> <span style="color: #0066BB; font-weight: bold">getInfo</span>(stu, prof):
                 pool_1 <span style="color: #333333">=</span> Pool(processes<span style="color: #333333">=</span><span style="color: #0000DD; font-weight: bold">10</span>)
                 r1 <span style="color: #333333">=</span> pool_1<span style="color: #333333">.</span>apply_async(getOnset, (stu, ))
                 r2 <span style="color: #333333">=</span> pool_1<span style="color: #333333">.</span>apply_async(getOnset, (prof, ))
@@ -270,11 +270,11 @@
         <hr>
         <div style="font-size:18px">
             <h2>Parts List</h2>
-            <ul>
-                <li>Raspberry Pi $35.00</li>
-                <a href="https://www.adafruit.com/product/3367"><li>Mini USB Microphone $5.95</li></a>
-                <li>Monitor, Keyboard, Mouse, and Cables - Provided in lab</li>
-            </ul>
+
+                <p>Raspberry Pi $35.00</p>
+                <a href="https://www.adafruit.com/product/3367">Mini USB Microphone $5.95</a>
+                <p>Monitor, Keyboard, Mouse, and Cables - Provided in lab</p>
+
             <h3>Total: $40.95</h3>
         </div>
         <hr>
@@ -292,7 +292,7 @@
        <hr>
         <div class="row">
             <h2>Code Appendix</h2>
-            <a style ="padding-bottom: 100px; font-size:18px;"href="https://github.com/shaneelu/ece5725_final_project/tree/master/demo">The code to our project can be found here  .</a>
+            <a style ="padding-bottom: 100px; font-size:18px;" href="https://github.com/shaneelu/ece5725_final_project/tree/master/demo">The code to our project can be found here  .</a>
         </div>
 
     </div><!-- /.container -->
